@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container mx-auto mt-lg-5 mt-3 shadow-sm px-lg-5 px-2 py-3">
+        <h3 class="my-lg-4 my-2 text-center text-decoration-underline">School Portal</h3>
+        <div class="alert alert-danger p-2 text-center" id="errorMsg" style="display: none;">Space cannot be blank</div>
+        <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Enter your course"
+            id="course">
+        <button onclick="addCourse()" class="btn btn-secondary w-100 my-1 btn-sm">Add Course</button>
+    </div>
+    <div class="mx-auto container mt-lg-5 mt-3">
+        <table class="px-lg-5 px-2 py-3 table table-bordered table-striped" id="displayCourses">
+            <p class="text-center alert alert-secondary" id="initialMsg">Courses added will show here</p>
+        </table>
+    </div>
+    <div class="container text-center mt-lg-5 p-lg-3 p-1 mt-3" id="allButtons" style="display: none;">
+        <button onclick="addStart()" class="btn btn-success btn-sm">Add to Start</button>
+        <button onclick="deleteFirst()" class="btn btn-danger btn-sm">Delete First</button>
+        <button onclick="deleteLast()" class="btn btn-danger btn-sm">Delete Last</button>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+        <button onclick="deleteAny()" class="btn btn-warning btn-sm">Delete Any</button>
+        <button onclick="deleteAll()" class="btn btn-warning btn-sm">Delete All</button>
+    </div>
+
+
+    <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Launch demo modal
+    </button> -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Course</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="number" class="form-control form-control-sm shadow-none my-3"
+                        placeholder="Enter the number to edit" id="numberToDelete">
+                    <input type="text" class="form-control form-control-sm shadow-none my-3"
+                        placeholder="Enter your course" id="newCourse">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="editCourse()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var allCourses = []
+
+    function addCourse() {
+        if (course.value == "") {
+            errorMsg.style.display = 'block'
+            throw new Error("No no now, ")
+        } else {
+            errorMsg.style.display = 'none'
+            allButtons.style.display = 'block'
+            initialMsg.style.display = "none"
+            allCourses.push(course.value)
+            document.getElementById('course').value = ""
+            console.log(allCourses);
+            showCourses()
+        }
+    }
+
+    function deleteFirst() {
+        allCourses.shift()
+        showCourses()
+    }
+
+    function deleteLast() {
+        allCourses.pop()
+        showCourses()
+    }
+
+    function addStart() {
+        var newInput = prompt('Enter your course')
+        allCourses.unshift(newInput)
+        showCourses()
+    }
+
+    function deleteAll() {
+        var confam = confirm("Are you sure you want to delete? This action is irreversible")
+        console.log(confam);
+        if (confam === true) {
+            allCourses.splice(0, allCourses.length)
+            showCourses()
+            displayCourses.style.display = 'none'
+            initialMsg.style.display = 'block'
+        } else {
+            showCourses()
+        }
+    }
+
+    function deleteAny() {
+        var checkCourse = Number(prompt("Type the number you want to delete"))
+        if (checkCourse <= allCourses.length) {
+            console.log(checkCourse);
+            var confam = confirm("Are you sure you want to delete? This action is irreversible")
+            if (confam === true) {
+                allCourses.splice(checkCourse - 1, 1)
+                showCourses()
+            }
+        } else {
+            alert("Enter a valid number")
+        }
+
+    }
+
+    function editCourse() {
+        if (numberToDelete.value === "" || newCourse.value === "") {
+            alert("Fill in empty spaces")
+        } else {
+            var checkCourse = Number(numberToDelete.value)
+            if (checkCourse <= allCourses.length) {
+                // console.log(checkCourse);
+                allCourses.splice(checkCourse-1,1,newCourse.value)
+                showCourses()
+            } else {
+                alert("Enter a valid number")
+            }
+        }
+    }
+
+    function showCourses() {
+        displayCourses.innerHTML = ""
+        displayCourses.innerHTML += `
+                <thead>
+                    <tr>
+                        <td class="fw-bold text-center">S/N</td>
+                        <td class="fw-bold text-center">Name</td>
+                        <td class="fw-bold text-center">Actions</td>
+                    </tr>
+                </thead>`
+        for (i = 0; i < allCourses.length; i++) {
+            displayCourses.innerHTML += `
+                    <tbody>
+                        <tr>
+                            <td class="text-center">${i + 1}</td>
+                            <td class="text-center">${allCourses[i]}</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-warning">Edit</button>
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                `
+        }
+    }
+</script>
+
+</html>
