@@ -64,6 +64,7 @@
 </body>
 <script>
     var allCourses = []
+    var editIndex;
 
     function addCourse() {
         if (course.value == "") {
@@ -139,6 +140,22 @@
         }
     }
 
+    function deleteOne(index) {
+        var confam = confirm('Are you sure you want to delete')
+        if(confam === true) {
+            console.log(index);
+            allCourses.splice(index, 1)
+            showCourses()
+        } else {
+            showCourses()
+        }
+    }
+
+    function getIndex(index) {
+        console.log(index);
+        editIndex = index
+    }
+
     function showCourses() {
         displayCourses.innerHTML = ""
         displayCourses.innerHTML += `
@@ -156,8 +173,8 @@
                             <td class="text-center">${i + 1}</td>
                             <td class="text-center">${allCourses[i]}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-warning">Edit</button>
-                                <button class="btn btn-sm btn-danger">Delete</button>
+                                <button class="btn btn-sm btn-warning" onclick="getIndex(${i})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteOne(${i})">Delete</button>
                             </td>
                         </tr>
                     </tbody>
