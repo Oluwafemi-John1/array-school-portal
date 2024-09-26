@@ -16,8 +16,9 @@
     <div class="container mx-auto mt-lg-5 mt-3 shadow-sm px-lg-5 px-2 py-3">
         <h3 class="my-lg-4 my-2 text-center text-decoration-underline">School Portal</h3>
         <div class="alert alert-danger p-2 text-center" id="errorMsg" style="display: none;">Space cannot be blank</div>
-        <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Enter your course"
-            id="course">
+        <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Enter your course" id="course">
+        <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Course Title" id="courseTitle">
+        <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Instructor" id="instructor">
         <button onclick="addCourse()" class="btn btn-secondary w-100 my-1 btn-sm">Add Course</button>
     </div>
     <div class="mx-auto container mt-lg-5 mt-3">
@@ -63,18 +64,24 @@
     </div>
 </body>
 <script>
-    var allCourses = []
-    var editIndex;
+    const allCourses = []
+    let editIndex;
 
-    function addCourse() {
-        if (course.value == "") {
+    const addCourse = () => {
+        if (course.value == "" || courseTitle.value == "" || instructor.value == "") {
             errorMsg.style.display = 'block'
             throw new Error("No no now, ")
         } else {
             errorMsg.style.display = 'none'
             allButtons.style.display = 'block'
             initialMsg.style.display = "none"
-            allCourses.push(course.value)
+            let courseObj = {
+                courseId: course.value,
+                title: courseTitle.value,
+                ins: instructor.value
+            }
+            console.log(courseObj);
+            allCourses.push(courseObj)
             document.getElementById('course').value = ""
             console.log(allCourses);
             showCourses()
@@ -132,7 +139,7 @@
             var checkCourse = Number(numberToDelete.value)
             if (checkCourse <= allCourses.length) {
                 // console.log(checkCourse);
-                allCourses.splice(checkCourse-1,1,newCourse.value)
+                allCourses.splice(checkCourse - 1, 1, newCourse.value)
                 showCourses()
             } else {
                 alert("Enter a valid number")
@@ -142,7 +149,7 @@
 
     function deleteOne(index) {
         var confam = confirm('Are you sure you want to delete')
-        if(confam === true) {
+        if (confam === true) {
             console.log(index);
             allCourses.splice(index, 1)
             showCourses()
