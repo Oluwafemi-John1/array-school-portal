@@ -62,6 +62,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal 2 -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Course</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Enter your course" id="editedCourse">
+                    <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Course Title" id="editedCourseTitle">
+                    <input type="text" class="form-control form-control-sm shadow-none my-3" placeholder="Instructor" id="editedInstructor">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="edit()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script>
     const allCourses = []
@@ -70,7 +91,10 @@
     const addCourse = () => {
         if (course.value == "" || courseTitle.value == "" || instructor.value == "") {
             errorMsg.style.display = 'block'
-            throw new Error("No no now, ")
+            setTimeout(()=>{
+                errorMsg.style.display = 'none'
+            }, 3000)
+            throw new Error("No no now")
         } else {
             errorMsg.style.display = 'none'
             allButtons.style.display = 'block'
@@ -83,6 +107,8 @@
             console.log(courseObj);
             allCourses.push(courseObj)
             document.getElementById('course').value = ""
+            document.getElementById('courseTitle').value = ""
+            document.getElementById('instructor').value = ""
             console.log(allCourses);
             showCourses()
         }
@@ -147,6 +173,21 @@
         }
     }
 
+    const edit = () => {
+        if (editedCourse.value == "" || editedCourseTitle.value == "" || editedInstructor.value == "") {
+            alert('fill in empty spaces')
+        } else {
+            let newCourseObj = {
+                courseId: editedCourse.value,
+                title: editedCourseTitle.value,
+                ins: editedInstructor.value
+            }
+            console.log(newCourseObj);
+            allCourses.splice(editIndex,1,newCourseObj)
+            showCourses()
+        }
+    }
+
     function deleteOne(index) {
         var confam = confirm('Are you sure you want to delete')
         if (confam === true) {
@@ -163,13 +204,15 @@
         editIndex = index
     }
 
-    function showCourses() {
+    const showCourses = () => {
         displayCourses.innerHTML = ""
         displayCourses.innerHTML += `
                 <thead>
                     <tr>
                         <td class="fw-bold text-center">S/N</td>
-                        <td class="fw-bold text-center">Name</td>
+                        <td class="fw-bold text-center">Course Code</td>
+                        <td class="fw-bold text-center">Course Title</td>
+                        <td class="fw-bold text-center">Instructor</td>
                         <td class="fw-bold text-center">Actions</td>
                     </tr>
                 </thead>`
@@ -178,9 +221,11 @@
                     <tbody>
                         <tr>
                             <td class="text-center">${i + 1}</td>
-                            <td class="text-center">${allCourses[i]}</td>
+                            <td class="text-center">${allCourses[i].courseId}</td>
+                            <td class="text-center">${allCourses[i].title}</td>
+                            <td class="text-center">${allCourses[i].ins}</td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-warning" onclick="getIndex(${i})">Edit</button>
+                                <button class="btn btn-sm btn-warning" onclick="getIndex(${i})" data-bs-toggle="modal" data-bs-target="#exampleModal2">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteOne(${i})">Delete</button>
                             </td>
                         </tr>
